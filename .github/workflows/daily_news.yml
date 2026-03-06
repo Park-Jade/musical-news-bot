@@ -1,0 +1,27 @@
+name: Daily Musical News
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # UTC 0시 = 한국 아침 9시
+  workflow_dispatch:      # 내가 원할 때 버튼 눌러서 실행 가능
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v3
+
+      - name: 파이썬 설정
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: 라이브러리 설치
+        run: pip install feedparser
+
+      - name: 뉴스 수집 및 메일 전송
+        env:
+          MY_EMAIL: ${{ secrets.MY_EMAIL }}
+          MY_PASSWORD: ${{ secrets.MY_PASSWORD }}
+        run: python main.py
